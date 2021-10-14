@@ -18,7 +18,7 @@ class VariableSeeder extends Seeder
     {
         DB::table("variables")->insert([
             ["name" => "First Name", "key" => "first_name", "description" => "The first name of user"],
-            ["name" => "Last Name", "key" => "last_name"],
+            ["name" => "Last Name", "key" => "last_name","description" => "The last name of users"],
             ["name" => "Image File", "key" => "image", "type" => "image"],
         ]);
     }

@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class NotificationType extends Model
 {
     use HasFactory;
+
+    public function templates()
+    {
+        return $this->hasMany(Template::class);
+    }
 }

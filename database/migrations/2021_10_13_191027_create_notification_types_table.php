@@ -15,7 +15,7 @@ class CreateNotificationTypesTable extends Migration
     {
         Schema::create('notification_types', function (Blueprint $table) {
             $table->id();
-            $table-foreignId("loyalty_id")
+            $table->foreignId("loyalty_id")
                   ->constrained("loyalties")
                   ->onUpdate("cascade")
                   ->onDelete("cascade");

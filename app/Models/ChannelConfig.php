@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class ChannelConfig extends Model
 {
     use HasFactory;
+    public function channel()
+    {
+        return $this->belongsTo(ChannelProvider::class);
+    }
 }

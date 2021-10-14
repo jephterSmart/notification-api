@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Loyalty extends Model
 {
     use HasFactory;
+
+    public function notifications()
+    {
+        return $this->hasMany(NotificationType::class);
+    }
 }

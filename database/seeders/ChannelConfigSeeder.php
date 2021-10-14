@@ -19,7 +19,7 @@ class ChannelConfigSeeder extends Seeder
         DB::table("channel_configs")->insert([
             ["host" =>"mail.rewardsboxnigeria.com " , "config" =>json_encode([
                 "username" => "createsurveys@rewardsboxnigeria.com", "password" => "cy;bi+3?TXO!", "port" => 587, "encryption" => ""
-            ]) , "channel_type_id" => 1, "loyalty_id" => 1],
+            ]) , "channel_provider_id" => 1, "loyalty_id" => 1],
            
         ]);
     }

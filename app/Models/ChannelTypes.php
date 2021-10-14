@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class ChannelTypes extends Model
 {
     use HasFactory;
+
+    public function providers()
+    {
+        return $this->hasMany(Provider::class);
+    }
 }

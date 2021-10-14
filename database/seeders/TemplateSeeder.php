@@ -19,7 +19,7 @@ class TemplateSeeder extends Seeder
         DB::table("templates")->insert([
             ["channel_provider_id" => 1, "loyalty_id" => 1, "notification_type_id" => 1,
             "subject" => "Enrollment Notification successful", "name" => "enrollment template", 
-            "content"=>" <html>Hello $first_name $last_name. You have been enrolled successfully</html>"]
+            "content"=>" <html>Hello \$first_name \$last_name. You have been enrolled successfully</html>"]
         ]);
     }
 }

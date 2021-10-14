@@ -22,6 +22,10 @@ class DatabaseSeeder extends Seeder
             NotificationTypeSeeder::class,
             TemplateSeeder::class,
             VariableSeeder::class,
+            EmailAddressSeeder::class,
+            EmailGroupSeeder::class,
+            EmailGroupAddressSeeder::class,
+            EmailGroupNotificationSeeder::class
         ]);
     }
 }
