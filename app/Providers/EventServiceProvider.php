@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\Event;
 
 use App\Events\NotificationSending;
 use App\Events\NotificationSent;
+use App\Events\NotificationFail;
 use App\Listeners\NotificationSendingListener;
 use App\Listeners\NotificationSentListener;
+use App\Listeners\NotificationFailListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -28,6 +30,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         NotificationSent::class => [
             NotificationSentListener::class
+        ],
+        NotificationFail::class => [
+            NotificationFailListener::class
         ]
     ];
 

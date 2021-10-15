@@ -2,15 +2,14 @@
 
 namespace App\Listeners;
 
+use App\Events\NotificationFail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-use App\Events\NotificationSending; 
 use App\Models\NotificationLog;
 
-class NotificationSendingListener implements ShouldQueue
+class NotificationFailListener implements ShouldQueue
 {
-    public $tries = 5;
     /**
      * Create the event listener.
      *
@@ -20,19 +19,16 @@ class NotificationSendingListener implements ShouldQueue
     {
         //
     }
-    public function backoff()
-    {
-        return [1, 5, 10,15,20];
-    }
+
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param  NotificationFail  $event
      * @return void
      */
-    public function handle(NotificationSending $event)
+    public function handle(NotificationFail $event)
     {
-        $log = ["result" => "notification has begin sending"];
+        $log = ["result" => "notification could not be sent due to: ". $event->log["error"]];
         NotificationLog::create(array_merge($log,$event->log));
     }
 }

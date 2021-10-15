@@ -10,18 +10,17 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-
-class NotificationSending
+class NotificationFail
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-     
     public $log;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct( $log)
+    
+    public function __construct($log)
     {
         $this->log = $log;
     }

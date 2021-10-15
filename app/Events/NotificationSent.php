@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-use App\Models\NotificationLog;
+
 
 class NotificationSent
 {
@@ -22,7 +22,7 @@ class NotificationSent
      * @return void
      */
     
-    public function __construct(NotificationLog $log)
+    public function __construct($log)
     {
         $this->log = $log;
     }

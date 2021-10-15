@@ -7,6 +7,8 @@ use Illuminate\Queue\InteractsWithQueue;
 
 use App\Events\NotificationSent; 
 
+use App\Models\NotificationLog;
+
 class NotificationSentListener implements ShouldQueue
 {
     public $tries = 5;
@@ -31,6 +33,7 @@ class NotificationSentListener implements ShouldQueue
      */
     public function handle(NotificationSent $event)
     {
-        //
+        $log = ["result" => "notification was sent successfully"];
+        NotificationLog::create(array_merge($log,$event->log));
     }
 }

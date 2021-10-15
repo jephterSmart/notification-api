@@ -18,6 +18,6 @@ class EmailGroup extends Model
     public function notifications()
     {
         return $this->belongsToMany(NotificationType::class, 'email_group_notifications',
-         'email_group_id', 'notification_type_id')->withPivot('created_at');
+         'email_group_id', 'notification_type_id')->withPivot('created_at','email_copy');
     }
 }

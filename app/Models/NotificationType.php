@@ -13,4 +13,9 @@ class NotificationType extends Model
     {
         return $this->hasMany(Template::class);
     }
+    public function groups()
+    {
+        return $this->belongsToMany(EmailGroup::class, 'email_group_notifications',
+         'notification_type_id', 'email_group_id')->withPivot('created_at','email_copy');
+    }
 }
