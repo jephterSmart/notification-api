@@ -11,7 +11,8 @@ use App\Models\NotificationLog;
 
 class NotificationSentListener implements ShouldQueue
 {
-    public $tries = 5;
+    use InteractsWithQueue;
+    public $tries = 3;
     /**
      * Create the event listener.
      *
@@ -34,6 +35,18 @@ class NotificationSentListener implements ShouldQueue
     public function handle(NotificationSent $event)
     {
         $log = ["result" => "notification was sent successfully"];
-        NotificationLog::create(array_merge($log,$event->log));
+        $num = rand(1,10);
+        // if($num < 7){
+        //     $this->fail();
+        // }
+       $logs = NotificationLog::create(array_merge($log,$event->log));
+    }
+    // public function shouldQueue(){
+    //     return false;
+    // }
+    public function failed(NotificationSent $event, \Throwable $err)
+    {
+        $log = ["result" => $err->getMessage()];
+        NotificationLog::create(array_merge($event->log, $log));
     }
 }

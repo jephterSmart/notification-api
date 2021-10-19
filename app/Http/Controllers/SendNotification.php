@@ -74,7 +74,7 @@ class SendNotification extends Controller
            
         }
        $templates = $this->grabTemplates($request,$notTypes);
-
+        // dd($templates);
         $responses = $this->send($request->recipient, $templates,$request->immediate,$configs);
        return response()->json([
            "message" =>"notification has been sent",
@@ -121,7 +121,8 @@ class SendNotification extends Controller
     private function send($recipient,$templates,$immediate,$configs)
     {
         $channelTypes = [];
-        foreach($templates as  $template){
+        // foreach($templates as  $template){
+            $template = $templates[0];
             $channelType= ChannelProvider::find($template->channel_provider_id)
             ->channel_type_id;
             $channelTypes[] = $channelType;
@@ -133,19 +134,19 @@ class SendNotification extends Controller
                 "content" => $template->content,
                 "variables" => json_encode(request()->variables)
             ]);
-            if($channelType == self::EMAIL_TYPE){
+            if($channelType == 1){
                 $response[] = $this->viaEmail($recipient,$template,$immediate,$configs);
             }
-            else{
-                $response[] = $this->viaSMS($recipient,$template,$immediate,$configs);
-            }
-        }
+            // else{
+            //     $response[] = $this->viaSMS($recipient,$template,$immediate,$configs);
+            // }
+        // }
         return $response;
         
     }//end
     private function viaEmail($recipient,$template,$immediate,$configs)
     {
-        
+       
         $notType = NotificationType::find($template->notification_type_id);
         $conf;
         foreach($configs as $config){
@@ -154,6 +155,30 @@ class SendNotification extends Controller
                     $conf = $config;
                 }
         }
+        $variable = json_decode($conf->config);
+        // config([
+        //     'mail.default' => 'smtp',
+        //     'mail.mailers.smtp.host' => $conf->host,
+        //     'mail.mailers.smtp.port' =>  $variable->port,
+        //     'mail.mailers.smtp.username' => @$variable->username,
+        //     'mail.mailers.smtp.password' => @$variable->password,
+        //     'mail.mailers.smtp.encryption' => @$variable->encryption,
+        //     'mail.from.address' => 'jephter@gmail.com',
+        //     'mail.from.name' => 'Jephter',
+        //     // 'mail.reply_to.address' => 'jephter@gmail.com',
+        // ]);
+        // $replyTo = 'mail.rewardsbox.com';
+        config([
+            "mail.mailers.smtp.host" => $conf->host,
+            "mail.mailers.smtp.username" => $variable->username,
+            "mail.mailers.smtp.password" => $variable->password,
+            "mail.mailers.smtp.port" => $variable->port,
+            "mail.mailers.smtp.encryption" => $variable->encryption,
+            "mail.from.name" => "Jephter",
+            "mail.from.address" => "jephter@gmail.com",
+            "mail.reply_to.address" => 'olayinka@loyaltysolutionsnigeria.com',
+            "mail.reply_to.name" => 'olayinka'
+        ]);
         $mail = Mail::to($recipient);
         $groups = $notType->groups->map(function($item){
             return ["{$item->pivot->email_copy}" => $item->id];
@@ -172,31 +197,33 @@ class SendNotification extends Controller
         $emails=[];
         foreach($groups as $key => $groupIds){
             foreach($groupIds as $groupId){
-               $_emails =  EmailGroup::find($groupId)->addresses->toArray();
+               $_emails =  EmailGroup::find($groupId)->addresses()
+                ->pluck("email")->toArray();
+            //    dd($_emails);
                 //This ensures that emails are sent once
-                $emails[] = array_merge($_emails,$emails );
+                $emails = array_merge($emails,$_emails );
             }
-            $groups[$key] = $emails;
+            $groups[$key] = array_unique($emails);
             $emails = [];
         }
+        
+        // dd($groups);
         if(count($groups["bcc"])){
-            $mail->bcc($groups["bcc"]);
+           $mail = $mail->bcc($groups["bcc"]);
         }
         if(count($groups["cc"])){
-            $mail->cc($groups["cc"]);
+            $mail =   $mail->cc($groups["cc"]);
         }
         $channelType = ChannelProvider::find($template->channel_provider_id)->channel_type_id;
-        $variable = json_decode($conf->config);
-        config([
-            "mail.mailers.smtp.host" => $conf->host,
-            "mail.mailers.smtp.username" => $variable->username,
-            "mail.mailers.smtp.password" => $variable->password,
-            "mail.mailers.smtp.port" => $variable->port,
-            "mail.mailers.smtp.encryption" => $variable->encryption
-        ]);
-        if($immediate == "true"){
+       
+        
+        
+        
+        if($immediate === "true"){
             try{
+            //    dump(config("mail"));
                 $mail->send(new SmtpMail($template));
+                
                 NotificationSent::dispatch([
                     "channel_provider_id" => $template->channel_provider_id,
                     "channel_type_id" => $channelType,
@@ -211,6 +238,7 @@ class SendNotification extends Controller
                     "message"=>"message has been sent succesfully"
                 ];
             }catch(\Exception $err){
+                dd($err);
                 NotificationFail::dispatch([
                     "error" => $err->getMessage(),
                     "channel_provider_id" => $template->channel_provider_id,

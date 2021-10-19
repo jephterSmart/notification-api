@@ -20,6 +20,7 @@ class SmtpMail extends Mailable
     public function __construct($template)
     {
         $this->content = $template->content;
+        $this->subject = $template->subject;
     }
 
     /**
@@ -29,6 +30,6 @@ class SmtpMail extends Mailable
      */
     public function build()
     {
-        return $this->view('view.templates.smtp')->subject($template->subject);
+        return $this->view('templates.smtp')->subject($this->subject);
     }
 }
